@@ -1,0 +1,23 @@
+# Ignorar datos de entrada y salida (muy pesados, se regeneran con los scripts)
+code/sorting/data/array_input/
+code/sorting/data/array_output/
+code/matrix_multiplication/data/matrix_input/
+code/matrix_multiplication/data/matrix_output/
+
+# Ignorar ejecutables compilados
+code/sorting/sorting
+code/matrix_multiplication/matrix_multiplication
+
+# Ignorar archivos temporales de LaTeX
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
+report/*.toc
+report/*.fdb_latexmk
+report/*.fls
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
