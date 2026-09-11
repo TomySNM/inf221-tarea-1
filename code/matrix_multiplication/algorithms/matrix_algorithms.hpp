@@ -1,5 +1,5 @@
 // INF-221 Tarea 1 2026-2 | Nombre: Tomás San Martín | Rol: 202473565-9
-// Declaraciones comunes para los algoritmos de multiplicación de matrices.
+// Declaraciones para los algoritmos de multiplicación de matrices.
 #ifndef MATRIX_ALGORITHMS_HPP
 #define MATRIX_ALGORITHMS_HPP
 #include <vector>

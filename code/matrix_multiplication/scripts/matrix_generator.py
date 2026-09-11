@@ -9,7 +9,7 @@ import matplotlib # type: ignore
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt # type: ignore
 
-BASE = pathlib.Path(__file__).resolve().parents[1]   # code/matrix_multiplication
+BASE = pathlib.Path(__file__).resolve().parents[1]   
 MEAS = BASE / "data" / "measurements"
 OUT  = BASE / "data" / "plots"
 OUT.mkdir(parents=True, exist_ok=True)

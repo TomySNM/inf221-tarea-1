@@ -55,7 +55,7 @@ Matrix strassen_rec(const Matrix& A, const Matrix& B) {
     set_block(C, add(add(M1, M3), sub(M6, M2)), h, h);
     return C;
 }
-} // namespace
+}
 
 Matrix strassen_multiply(const Matrix& A, const Matrix& B) {
     const size_t n = A.size();

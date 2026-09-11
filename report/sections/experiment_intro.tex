@@ -1,10 +1,16 @@
 % INF-221 Tarea 1 2026-2 | Tomás San Martín | Rol 202473565-9
 Equipo: Intel(R) Core(TM) i5-9300H CPU @ 2.40GHz, 24 GB RAM, Windows 11 con WSL2 (Ubuntu); compilador
 g++ 13.3.0 con flags \texttt{-O2 -std=c++17} (en todos los algoritmos). 
+
+Se empleó el nivel de optimización \texttt{-O2} por tres razones. En primera instancia, porque nuestro objetivo
+es medir y estudiar el comportamiento de los algoritmos en la práctica. En segundo lugar, por factibilidad experimental, ya que, de lo contrario,
+en las pruebas de Strassen, el tiempo de ejecución aumentaría considerablemente. Y en tercer lugar, al medir en un
+entorno igual para todos (mismas flags), las diferencias de las curvas las marcan los algoritmos y no el compilador.
+
 Los casos de prueba se generaron con los scripts provistos por el
 curso: ordenamiento con $N=\{10,10^3,10^5,10^7\}$, $T=\{$ascendente,
 descendente, aleatorio$\}$, $D=\{$D1,D7$\}$, $M=\{$a,b,c$\}$; matrices con
 $N=\{2^4,2^6,2^8,2^{10}\}$, $T=\{$dispersa, diagonal, densa$\}$,
 $D=\{$D0,D10$\}$, $M=\{$a,b,c$\}$ (72 casos por problema). Como limitaciones en
-el desarrollo de la tarea tenemos efectos de caché al momento de comparar teórico y experimentalmente los
+el desarrollo de la tarea tenemos efectos de caché al momento de comparar teórica y experimentalmente los
 algoritmos, y la resolución del muestreo de memoria.

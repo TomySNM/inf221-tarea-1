@@ -17,7 +17,7 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \newbool{programs}
-\boolfalse{programs}
+\booltrue{programs}
 \chead{REPORTE TAREA \tnum~}
 
 
@@ -46,6 +46,8 @@
 \section{Introducción}
 \input{sections/introduccion}
 
+\input{sections/implementations.tex}
+
 \section{Entorno experimental}
 \input{sections/experiment_intro}
 
@@ -55,6 +57,7 @@
 \section{Conclusiones}
 \input{sections/conclusions}
 
+\nocite{*}
 \printbibliography
 
 \end{document}

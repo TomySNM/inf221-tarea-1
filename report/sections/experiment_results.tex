@@ -12,18 +12,18 @@
 \caption{Tiempo (ms), entrada aleatoria, dominio D7, muestra a.}
 \begin{tabular}{l|rrrr}
 \hline
-$n$ & merge & quick & patience & std::sort \\ \hline
+$n$ & merge & quick & patience & sort \\ \hline
 $10^5$  & 7.98 & 5.17 & 10.26 & 5.42 \\
 $10^7$  & 1247.82 & 867.64 & 1870.45 & 862.97 \\ \hline
 \end{tabular}
 \end{table}
 En escala log--log las curvas presentan pendiente cercana a 1, coherente con
-$O(n\log n)$. \texttt{std::sort} y quick sort dominan en entrada aleatoria;
+$O(n\log n)$. sort y quick sort dominan en entrada aleatoria;
 merge sort es el más rápido en entrada ascendente gracias a la fusión
 condicional, mientras que patience sort se degrada notablemente en ese caso
 porque genera aproximadamente $n$ pilas. En memoria, merge y patience crecen
 lineales ($O(n)$: buffer y pilas más arreglo de salida), en tanto que quick
-sort y \texttt{std::sort} permanecen planos: su espacio extra es pila de
+sort y sort permanecen planos: su espacio extra es pila de
 recursión $O(\log n)$, no heap.
 \subsection{Multiplicación de matrices}
 \begin{figure}[ht]\centering
@@ -50,3 +50,34 @@ se amortiza en tamaños grandes. En memoria, naive asigna únicamente la matriz
 resultado ($\approx 8$\,MB en $n=1024$), mientras Strassen alcanza
 $\approx 45$\,MB por los temporales recursivos: el divide-and-conquer compra
 tiempo con espacio.
+
+\subsection{Contraste con el teorema maestro}
+Para cerrar el círculo entre teoría y práctica usamos el teorema maestro como
+una predicción: a partir de cómo cada algoritmo divide su problema, el teorema
+nos dice qué crecimiento deberíamos ver en los gráficos. Merge sort, por
+ejemplo, parte el arreglo en dos mitades y luego dedica un trabajo proporcional
+a $n$ para volver a juntarlas; esa es justamente la recurrencia
+$T(n) = 2T(n/2) + \Theta(n)$, y el teorema (caso 2) responde que el tiempo debe
+crecer como $n \log n$; el quick sort promedio, con partición balanceada, tiene
+la misma recurrencia y por tanto la misma cota. Strassen hace algo distinto:
+resuelve 7 multiplicaciones con la mitad del tamaño y deja para el final un
+trabajo de $n^2$ en sumas y restas de bloques; como ese trabajo final crece
+más lento que $n^{\log_2 7}$, el teorema (caso 1) predice un crecimiento de
+$T(n) = \Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$. Y si pensamos la
+multiplicación naive con la misma lógica (8 mitades más un trabajo de $n^2$),
+el teorema devuelve el conocido $\Theta(n^3)$.
+
+Lo valioso es que esas predicciones se cumplen en los datos. Entre $n=10^5$ y
+$n=10^7$ (Cuadro 1) los tiempos se multiplican entre 156 y 182 veces, lo que en
+la pendiente del gráfico log--log equivale a un exponente de 1.10 a 1.13: en
+palabras simples, el $n \log n$ que el teorema había anunciado. En matrices,
+Strassen multiplica su tiempo por 53.8 al pasar de $2^8$ a $2^{10}$
+(Cuadro 2), es decir, un exponente medido de 2.87 contra el 2.81 teórico.
+El único que se sale del libreto es naive, con un exponente medido de 3.8
+frente al 3 esperado; pero más que contradecir la teoría, ese desvío la
+complementa: a ese tamaño las tres matrices de 8 MB ya no caben en la caché del
+procesador, y buena parte del tiempo se va esperando datos desde la RAM,
+justamente la limitación que declaramos en la Sección 3. En síntesis: cuando el
+tamaño es suficiente para que mande el comportamiento asintótico, la teoría y el
+cronómetro cuentan la misma historia; y cuando no coinciden, la diferencia se
+explica por la jerarquía de memoria.
