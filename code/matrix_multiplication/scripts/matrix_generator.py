@@ -1,49 +1,44 @@
 # INF-221 Tarea 1 2026-2 | Nombre: Tomás San Martín | Rol: 202473565-9
-# Lee los CSV de data/measurements/ y genera PNG en data/plots/ (matrices).
-# Referencias:
-#  [1] https://matplotlib.org/stable/
-#  [2] https://pandas.pydata.org/docs/
-import pathlib
-import pandas as pd # pyright: ignore[reportMissingModuleSource]
-import matplotlib # type: ignore
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt # type: ignore
+# Genera los casos de prueba de matrices en data/matrix_input/
+# Referencias: enunciado Tarea 1 INF-221 2026-2 (Anexo A).
+import os
+import random
 
-BASE = pathlib.Path(__file__).resolve().parents[1]   
-MEAS = BASE / "data" / "measurements"
-OUT  = BASE / "data" / "plots"
-OUT.mkdir(parents=True, exist_ok=True)
+OUT = os.path.join(os.path.dirname(__file__), "..", "data", "matrix_input")
+os.makedirs(OUT, exist_ok=True)
+
+NS = [16, 64, 256, 1024]
 TIPOS = ["dispersa", "diagonal", "densa"]
+DIGITOS = {"D0": 1, "D10": 10}
+MUESTRAS = ["a", "b", "c"]
 
-dfs = []
-for f in sorted(MEAS.glob("*.csv")):
-    df = pd.read_csv(f)
-    df["algorithm"] = f.stem
-    dfs.append(df)
-df = pd.concat(dfs, ignore_index=True)
+def valor(d):
+    return random.randint(0, 9) if d == 1 else random.randint(10**(d-1), 10**d - 1)
 
-agg = df.groupby(["algorithm", "type", "n"]).agg(
-    time_ms=("time_ms", "mean"), mem_kb=("mem_kb", "mean")
-).reset_index()
+def matriz(n, tipo, d):
+    M = []
+    for i in range(n):
+        fila = []
+        for j in range(n):
+            if tipo == "densa":
+                fila.append(valor(d))
+            elif tipo == "diagonal":
+                fila.append(valor(d) if i == j else 0)
+            else:  # dispersa: ~10% no nulos
+                fila.append(valor(d) if random.random() < 0.1 else 0)
+        M.append(fila)
+    return M
 
-for metric, ylabel, fname in [("time_ms", "Tiempo (ms)", "tiempos"),
-                              ("mem_kb", "Memoria extra (KB)", "memoria")]:
-    fig, axes = plt.subplots(1, 3, figsize=(16, 4.6), sharey=True)
-    for ax, t in zip(axes, TIPOS):
-        sub = agg[agg["type"] == t]
-        for alg, g in sub.groupby("algorithm"):
-            g = g.sort_values("n")
-            ax.plot(g["n"], g[metric], marker="o", label=alg)
-        ax.set_xscale("log", base=2)
-        if metric == "time_ms":
-            ax.set_yscale("log")
-        ax.set_title(f"Matriz {t}")
-        ax.set_xlabel("n")
-        ax.grid(True, which="both", ls=":", alpha=0.6)
-    axes[0].set_ylabel(ylabel)
-    axes[-1].legend(fontsize=9)
-    fig.suptitle(f"Multiplicación de matrices: {ylabel} vs n (promedio sobre dominios y muestras)")
-    fig.tight_layout()
-    fig.savefig(OUT / f"{fname}.png", dpi=150)
-    plt.close(fig)
-print("Gráficos matrices guardados en", OUT)
+def guardar(M, ruta):
+    with open(ruta, "w") as f:
+        f.write(str(len(M)) + "\n")
+        for fila in M:
+            f.write(" ".join(map(str, fila)) + "\n")
+
+for n in NS:
+    for t in TIPOS:
+        for dom, d in DIGITOS.items():
+            for m in MUESTRAS:
+                for k in (1, 2):
+                    guardar(matriz(n, t, d), os.path.join(OUT, f"{n}_{t}_{dom}_{m}_{k}.txt"))
+print("Todas las matrices han sido generadas.")
